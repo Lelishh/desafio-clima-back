@@ -4,8 +4,10 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.tempo.entities.Cidade;
+import com.tempo.entities.Root;
 import com.tempo.repositories.CidadeRepository;
 import com.tempo.services.CidadeService;
 
@@ -28,4 +30,11 @@ public class CidadeServiceImp implements CidadeService {
 		return this.cidadeRepository.save(cidade);
 	}
 
+	
+	@Override
+	public Optional<Root> getClima(String cidade) {
+		RestTemplate rest = new RestTemplate();
+		Root root = rest.getForObject("https://api.hgbrasil.com/weather?key=7721ecf0&city_name="+cidade, Root.class);
+		return Optional.ofNullable(root);
+	}
 }

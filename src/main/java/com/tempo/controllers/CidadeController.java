@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tempo.entities.Cidade;
+import com.tempo.entities.Root;
 import com.tempo.response.Response;
 import com.tempo.services.CidadeService;
 
@@ -61,20 +62,27 @@ public class CidadeController {
 	
 	@GetMapping(value = "/")
 	public ResponseEntity<Response<String>> teste() {
+		this.cidadeService.getClima("brasilia");
 		return ResponseEntity.ok(new Response<String>());
 	}
 	
 	
-	@GetMapping(value = "/cidades/{nome}")
-	public ResponseEntity<Response<Cidade>> listarPorCidadeId(@PathVariable("nome") String nome) {
+	@GetMapping(value = "/{nome}")
+	public ResponseEntity<Response<Root>> listarPorCidadeId(@PathVariable("nome") String nome) {
 		
-		Response<Cidade> response = new Response<Cidade>();
+		Response<Root> response = new Response<Root>();
 		Optional<Cidade> cidade = this.cidadeService.buscarPorNome(nome);
 		if (! cidade.isPresent()) {
-			response.getErrors().add(new ObjectError("cidade", "Cidade não cadastrada.").toString());
-			return ResponseEntity.badRequest().body(response);
+			System.out.println("cidade não cadastrada: " + nome);
+			Optional<Root> root = this.cidadeService.getClima(nome);
+			if (root.isPresent()) {
+				this.cidadeService.persistir(new Cidade(nome));
+				response.setData(root.get());
+				return ResponseEntity.ok(response);
+			}
 		}
-		response.setData(cidade.get());
+		Optional<Root> root = this.cidadeService.getClima(nome);
+		response.setData(root.get());
 		return ResponseEntity.ok(response);
 	}
 	
