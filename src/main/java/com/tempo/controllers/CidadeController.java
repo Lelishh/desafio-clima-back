@@ -53,7 +53,7 @@ public class CidadeController {
 		
 		
 		Cidade cidadeRetorno = cidade.get();
-		this.cidadeService.persistir(cidadeRetorno);
+		// this.cidadeService.persistir(cidadeRetorno);
 		
 		response.setData(cidadeRetorno);
 		return ResponseEntity.ok(response);
@@ -71,18 +71,21 @@ public class CidadeController {
 	public ResponseEntity<Response<Root>> listarPorCidadeId(@PathVariable("nome") String nome) {
 		
 		Response<Root> response = new Response<Root>();
-		Optional<Cidade> cidade = this.cidadeService.buscarPorNome(nome);
-		if (! cidade.isPresent()) {
+		// Optional<Cidade> cidade = this.cidadeService.buscarPorNome(nome);
+		// if (! cidade.isPresent()) {
+		if (true) {
 			System.out.println("cidade não cadastrada: " + nome);
+			System.out.println("cadastrando cidade: " + nome);
+
 			Optional<Root> root = this.cidadeService.getClima(nome);
 			if (root.isPresent()) {
-				this.cidadeService.persistir(new Cidade(nome));
+				// this.cidadeService.persistir(new Cidade(nome));
 				response.setData(root.get());
-				return ResponseEntity.ok(response);
+				// return ResponseEntity.ok(response);
 			}
 		}
-		Optional<Root> root = this.cidadeService.getClima(nome);
-		response.setData(root.get());
+		// Optional<Root> root = this.cidadeService.getClima(nome);
+		// response.setData(root.get());
 		return ResponseEntity.ok(response);
 	}
 	
